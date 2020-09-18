@@ -3,39 +3,39 @@ import java.util.List;
 public class SimpleArrayList {
 
 	public static String [] data;
-    public static int elementsInArray;
+    public static int size;
 	
 	public SimpleArrayList() {
 		data = new String[1];
 		data[0] = "";
+		size = 0;
 	}
 	
 	public SimpleArrayList(int initialCapacity) {
+		if (initialCapacity == -1) throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
 		data = new String[1];
 		data[0] = "";
+		size = 0;
 	}
 	
 	public SimpleArrayList(List<String> list) {
-		if (list == null) throw new IllegalArgumentException();
+		if (list == null) throw new NullPointerException();
         data = new String[list.size()]; 
         for (int x = 0; x < list.size(); x++) { 
             data[x] = list.get(x);
         } 
+        size = data.length;
 	}
 	
 	public static void main(String[] args) {
-		SimpleArrayList list = new SimpleArrayList(15);
-		list.add("John");
-		list.add("Steve");
-		list.add(3, "Author");
-		System.out.print(list);
+		
 	}
 
 	public void add(int index, String s) {
 		int x = 0;
 		String[] temp = new String[data.length+1];
 		if (index < 0 || (data[x] != "" && index > data.length) || (data[x] == "" && index >= data.length)) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + data.length);
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
 		} else if (data[x] != "") {
 				while (x < temp.length) {
 					if (x < index) {
@@ -52,6 +52,7 @@ public class SimpleArrayList {
 			} else {
 				data[x] = s;
 			}
+		size++;
 	}
 	
 	public void add(String s) {
@@ -72,15 +73,13 @@ public class SimpleArrayList {
 		} else {
 			data[0] = s;
 		}
+		size++;
 	}
 	
 	public void clear() {
-		int x = 0;
-		int lengthChecker = data.length;
-		while (x < lengthChecker) {
-			data[x] = null;
-			x++;
-		}
+		size = 0;
+		data = new String[1];
+		data[0] = "";
 	}
 	
 	public boolean contains(String s) {
@@ -99,6 +98,9 @@ public class SimpleArrayList {
 	}
 	
 	public String get(int index) {
+		if (index > size || index < 0) {
+			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
+		}
 		String x;
 		return x = data[index];
 	}
@@ -109,6 +111,7 @@ public class SimpleArrayList {
 		int lengthChecker = data.length;
 		while (x < lengthChecker) {
 			if (data[x] == s) {
+				location = x;
 				return location;
 			} else {
 				x++;
@@ -118,21 +121,15 @@ public class SimpleArrayList {
 	}
 	
 	public boolean isEmpty() {
-		boolean empty = true;
-		int x = 0;
-		int lengthChecker = data.length;
-		while (x < lengthChecker) {
-			if (data[x] == null) {
-				x++;
-			} else {
-				empty = false;
-			}
-		}
-		return empty;
+		return (size == 0) ? true : false;
 	}
 	
 	public String remove(int index) {
 		int x = 0;
+		
+		if (index < 0 || (data[x] != "" && index > data.length) || (data[x] == "" && index >= data.length)) {
+			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
+		}
 		String[] temp = new String[data.length-1];
 		String removed = "";
 		
@@ -141,12 +138,14 @@ public class SimpleArrayList {
 				temp[x] = data[x];
 			} else if (x == index) {
 				removed = data[x];
+				temp[x] = data[x+1];
 			} else {
 				temp[x] = data[x+1];
 			}
 			x++;
 		}
 		data = temp;
+		size--;
 		return removed;
 	}
 	
@@ -158,28 +157,30 @@ public class SimpleArrayList {
 			if (data[x] == s) {
 				data[x] = null;
 				finished = true;
+				size--;
 				return finished;
 			} else {
 				x++;
 			}
 		}
+		
 		return finished;
 	}
 	
 	public String set(int index, String s) {
+		if (index > size || index < 0) {
+			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
+		}
 		String oldValue = data[index];
+		if (s == null) {
+			s = "null";
+		}
 		data[index] = s;
 		return oldValue;
 	}
 	
 	public int size() {
-		elementsInArray = 0;
-		for (int x = 0; x < data.length; x++) {
-			if (data[x] != null && data[x] != "") {
-				elementsInArray++;
-			}
-		}
-		return elementsInArray;
+		return size;
 	}
 		
 	public void trimToSize() {
