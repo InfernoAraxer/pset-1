@@ -79,8 +79,7 @@ public class SimpleArrayList {
 	
 	public void clear() {
 		size = 0;
-		data = new String[1];
-		data[0] = "";
+		data = new String[0];
 	}
 	
 	public boolean contains(String s) {
