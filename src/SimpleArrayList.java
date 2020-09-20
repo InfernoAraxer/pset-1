@@ -6,15 +6,13 @@ public class SimpleArrayList {
     public static int size;
 	
 	public SimpleArrayList() {
-		data = new String[1];
-		data[0] = "";
+		data = new String[10];
 		size = 0;
 	}
 	
 	public SimpleArrayList(int initialCapacity) {
 		if (initialCapacity == -1) throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
-		data = new String[1];
-		data[0] = "";
+		data = new String[initialCapacity];
 		size = 0;
 	}
 	
@@ -28,51 +26,54 @@ public class SimpleArrayList {
 	}
 	
 	public static void main(String[] args) {
-		
+
 	}
 
 	public void add(int index, String s) {
 		int x = 0;
-		String[] temp = new String[data.length+1];
-		if (index < 0 || (data[x] != "" && index > data.length) || (data[x] == "" && index >= data.length)) {
+		int y = 0;
+		String[] temp = new String[size+1];
+		if (index < 0 || (data[x] != "" && index > size) || (data[x] == "" && index >= size)) {
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-		} else if (data[x] != "") {
-				while (x < temp.length) {
-					if (x < index) {
-						temp[x] = data[x];
-					} else if (x == index) {
-						temp[x] = s;
-					} else {
-						temp[x] = data[x-1];
-					}
-					x++;
-				}
-				data = new String[temp.length];
-				data = temp;
+		}
+		for (x = 0; x < size + 1; x++) {
+			if (size == 0) {
+				temp[0] = s;
+				x = data.length;
 			} else {
-				data[x] = s;
+				if (x < index) {
+					temp[x] = data[x];
+				} else if (x == index) {
+					temp[x] = s;
+				} else {
+					temp[x] = data[x - 1];
+				}
 			}
+		}
+		
+		data = new String[temp.length];
+		data = temp;
 		size++;
-	}
+		}
 	
 	public void add(String s) {
 		int x = 0;
-		String [] temp = new String[data.length+1];
+		String [] temp = new String[size+1];
 		
-		if (data[x] != "") { 
-			while (x < temp.length) {
-				if (x < temp.length-1) {
+		for (x = 0; x < size + 1; x++) {
+			if (size == 0) {
+				temp[0] = s;
+				x = data.length;
+			} else {
+				if (x < size) {
 					temp[x] = data[x];
 				} else {
 					temp[x] = s;
 				}
-				x++;
 			}
-			data = new String[temp.length];
-			data = temp;
-		} else {
-			data[0] = s;
 		}
+		data = new String[temp.length];
+		data = temp;
 		size++;
 	}
 	
@@ -98,9 +99,7 @@ public class SimpleArrayList {
 	}
 	
 	public String get(int index) {
-		if (index > size || index < 0) {
-			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
-		}
+		throwIllegalArgument(index);
 		String x;
 		return x = data[index];
 	}
@@ -126,10 +125,7 @@ public class SimpleArrayList {
 	
 	public String remove(int index) {
 		int x = 0;
-		
-		if (index < 0 || (data[x] != "" && index > data.length) || (data[x] == "" && index >= data.length)) {
-			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
-		}
+		throwIllegalArgument(index);
 		String[] temp = new String[data.length-1];
 		String removed = "";
 		
@@ -168,9 +164,7 @@ public class SimpleArrayList {
 	}
 	
 	public String set(int index, String s) {
-		if (index > size || index < 0) {
-			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
-		}
+		throwIllegalArgument(index);
 		String oldValue = data[index];
 		if (s == null) {
 			s = "null";
@@ -203,14 +197,24 @@ public class SimpleArrayList {
 	
 	public String toString() {
 		String concat = "[";
-		for (int x = 0; x < data.length; x++) {
-			if (data[x] != null) {
-				concat += data[x];
-				concat += ", ";
+		if (size == 0) {
+			return "[]";
+		} else {
+			for (int x = 0; x < data.length; x++) {
+				if (data[x] != null) {
+					concat += data[x];
+					concat += ", ";
+				}
 			}
+			concat = concat.substring(0,concat.length()-2);
+			return concat += "]";
 		}
-		concat = concat.substring(0,concat.length()-2);
-		return concat += "]";
+	}
+	
+	private void throwIllegalArgument(int index) {
+		if (index > size || index < 0) {
+			throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
+		}
 	}
 }
 
